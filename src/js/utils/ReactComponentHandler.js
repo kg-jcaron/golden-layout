@@ -15,6 +15,7 @@ lm.utils.ReactComponentHandler = function( container, state ) {
 	this._reactClass = this._getReactClass();
 	this._container.on( 'open', this._render, this );
 	this._container.on( 'destroy', this._destroy, this );
+	this._container.on( 'resize', this._forceUpdate, this );
 };
 
 lm.utils.copy( lm.utils.ReactComponentHandler.prototype, {
@@ -36,6 +37,14 @@ lm.utils.copy( lm.utils.ReactComponentHandler.prototype, {
 		if( this._container.getState() ) {
 			this._reactComponent.setState( this._container.getState() );
 		}
+	},
+
+	_forceUpdate: function() {
+		// Only force update if visible and initialised
+		if (this._container.parent.isInitialised && this._container.parent.element.is( ':visible' ) &&
+			this._reactComponent && this._reactComponent.forceUpdate) {
+      this._reactComponent.forceUpdate();
+    }
 	},
 
 	/**
